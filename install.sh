@@ -27,8 +27,9 @@ print_error() {
 }
 
 # 检查是否为 root 用户
-if [[ $EUID -eq 0 ]]; then
-   print_error "请不要以 root 用户运行此脚本"
+if [[ $EUID -ne 0 ]]; then
+   print_error "此脚本需要 root 权限运行"
+   print_info "请使用: sudo bash install.sh"
    exit 1
 fi
 
@@ -44,8 +45,8 @@ print_info "开始安装 Telegram 转发机器人..."
 for cmd in git python3 pip3; do
     if ! command -v $cmd &> /dev/null; then
         print_info "安装系统依赖..."
-        sudo apt update
-        sudo apt install -y git python3 python3-pip python3-venv curl
+        apt update
+        apt install -y git python3 python3-pip python3-venv curl
         break
     fi
 done
@@ -69,9 +70,9 @@ cd /opt
 if [ -d "telegram-forward-bot" ]; then
     print_warning "目录已存在，正在更新..."
     cd telegram-forward-bot
-    sudo git pull
+    git pull
 else
-    sudo git clone "$REPO_URL" telegram-forward-bot
+    git clone "$REPO_URL" telegram-forward-bot
     cd telegram-forward-bot
 fi
 
@@ -102,10 +103,10 @@ else
     print_success "配置文件已设置"
 fi
 
-sudo chmod 600 .env
+chmod 600 .env
 
 print_info "创建 systemd 服务..."
-sudo tee /etc/systemd/system/telegram-forward-bot.service > /dev/null << EOF
+tee /etc/systemd/system/telegram-forward-bot.service > /dev/null << EOF
 [Unit]
 Description=Telegram Forward Bot
 After=network.target
@@ -129,27 +130,27 @@ WantedBy=multi-user.target
 EOF
 
 print_info "启动服务..."
-sudo systemctl daemon-reload
-sudo systemctl enable telegram-forward-bot
+systemctl daemon-reload
+systemctl enable telegram-forward-bot
 
 # 检查服务是否已运行
-if sudo systemctl is-active --quiet telegram-forward-bot; then
+if systemctl is-active --quiet telegram-forward-bot; then
     print_info "重启服务..."
-    sudo systemctl restart telegram-forward-bot
+    systemctl restart telegram-forward-bot
 else
     print_info "启动服务..."
-    sudo systemctl start telegram-forward-bot
+    systemctl start telegram-forward-bot
 fi
 
 # 等待服务启动
 sleep 3
 
 # 检查服务状态
-if sudo systemctl is-active --quiet telegram-forward-bot; then
+if systemctl is-active --quiet telegram-forward-bot; then
     print_success "部署成功！机器人已启动"
 else
     print_error "服务启动失败，请检查配置"
-    print_info "查看日志：sudo journalctl -u telegram-forward-bot -f"
+    print_info "查看日志：journalctl -u telegram-forward-bot -f"
     exit 1
 fi
 
@@ -157,9 +158,9 @@ echo ""
 print_success "🎉 Telegram 转发机器人部署完成！"
 echo ""
 echo "📋 常用命令："
-echo "  查看状态：sudo systemctl status telegram-forward-bot"
-echo "  查看日志：sudo journalctl -u telegram-forward-bot -f"
-echo "  重启服务：sudo systemctl restart telegram-forward-bot"
-echo "  停止服务：sudo systemctl stop telegram-forward-bot"
+echo "  查看状态：systemctl status telegram-forward-bot"
+echo "  查看日志：journalctl -u telegram-forward-bot -f"
+echo "  重启服务：systemctl restart telegram-forward-bot"
+echo "  停止服务：systemctl stop telegram-forward-bot"
 echo ""
 print_info "💡 提示：机器人已设置为开机自启动"

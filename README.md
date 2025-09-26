@@ -41,7 +41,8 @@
 在 VPS 上运行以下命令即可完成部署：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/mugegea/telegram-forward-bot/main/install.sh | bash
+# 一键部署（需要root权限）
+curl -fsSL https://raw.githubusercontent.com/mugegea/telegram-forward-bot/main/install.sh | sudo bash
 ```
 
 **部署步骤**：
@@ -55,7 +56,7 @@ curl -fsSL https://raw.githubusercontent.com/mugegea/telegram-forward-bot/main/i
 **配置 BOT_TOKEN**：
 脚本会提示你编辑配置文件，执行：
 ```bash
-sudo nano /opt/telegram-forward-bot/.env
+nano /opt/telegram-forward-bot/.env
 ```
 将 `BOT_TOKEN=your_bot_token_here` 改为你的实际 Token。
 
@@ -149,22 +150,22 @@ docker run -d \
 
 ```bash
 # 查看服务状态
-sudo systemctl status telegram-forward-bot
+systemctl status telegram-forward-bot
 
 # 启动服务
-sudo systemctl start telegram-forward-bot
+systemctl start telegram-forward-bot
 
 # 停止服务
-sudo systemctl stop telegram-forward-bot
+systemctl stop telegram-forward-bot
 
 # 重启服务
-sudo systemctl restart telegram-forward-bot
+systemctl restart telegram-forward-bot
 
 # 查看日志
-sudo journalctl -u telegram-forward-bot -f
+journalctl -u telegram-forward-bot -f
 
 # 开机自启
-sudo systemctl enable telegram-forward-bot
+systemctl enable telegram-forward-bot
 ```
 
 ## 🐛 故障排除
@@ -192,8 +193,9 @@ sudo systemctl enable telegram-forward-bot
 tail -f bot.log
 
 # 查看系统服务日志
-sudo journalctl -u telegram-forward-bot -f
+journalctl -u telegram-forward-bot -f
 ```
+
 
 ## ⚠️ 免责声明
 
