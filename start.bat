@@ -2,42 +2,47 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
-echo 🚀 启动 Telegram 转发机器人...
+echo Starting Telegram Forward Bot...
 
-REM 检查配置文件
+REM Check if .env file exists
 if not exist .env (
-    echo ❌ 未找到 .env 配置文件
-    echo 请先复制 config.env.example 为 .env 并配置 BOT_TOKEN
-    echo copy config.env.example .env
-    echo notepad .env
+    echo Creating .env file from template...
+    copy config.env.example .env
+    echo.
+    echo Please configure BOT_TOKEN in .env file before running the bot
+    echo Opening .env file for editing...
+    notepad .env
+    echo.
+    echo After configuring BOT_TOKEN, run this script again
     pause
     exit /b 1
 )
 
-REM 检查 BOT_TOKEN
+REM Check if BOT_TOKEN is configured
 findstr /C:"BOT_TOKEN=your_bot_token_here" .env >nul
 if !errorlevel! equ 0 (
-    echo ❌ 请先在 .env 文件中配置 BOT_TOKEN
+    echo Please configure BOT_TOKEN in .env file
+    echo Opening .env file for editing...
+    notepad .env
+    echo.
+    echo After configuring BOT_TOKEN, run this script again
     pause
     exit /b 1
 )
 
-REM 检查虚拟环境
+REM Check virtual environment
 if not exist venv (
-    echo 📦 创建虚拟环境...
+    echo Creating virtual environment...
     python -m venv venv
 )
 
-REM 激活虚拟环境
-echo 🔧 激活虚拟环境...
+echo Activating virtual environment...
 call venv\Scripts\activate.bat
 
-REM 安装依赖
-echo 📥 安装依赖...
+echo Installing dependencies...
 pip install -r requirements.txt
 
-REM 启动机器人
-echo ✅ 启动机器人...
+echo Starting bot...
 python bot.py
 
 pause
