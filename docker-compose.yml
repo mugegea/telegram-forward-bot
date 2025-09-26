@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  telegram-forward-bot:
+    build: .
+    container_name: telegram-forward-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./bot_data.pkl:/app/bot_data.pkl
+      - ./logs:/app/logs
+    environment:
+      - TZ=Asia/Shanghai
+    # 如果需要网络访问，取消注释以下行
+    # ports:
+    #   - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os; exit(0 if os.getenv('BOT_TOKEN') else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
