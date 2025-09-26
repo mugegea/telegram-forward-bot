@@ -195,10 +195,6 @@ tail -f bot.log
 sudo journalctl -u telegram-forward-bot -f
 ```
 
-## 📄 许可证
-
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
 ## ⚠️ 免责声明
 
 本工具仅供学习和研究使用，请遵守相关法律法规和 Telegram 服务条款。使用者需自行承担使用风险。
