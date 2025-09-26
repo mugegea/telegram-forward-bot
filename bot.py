@@ -18,6 +18,38 @@ from telegram.ext import (
     filters, PicklePersistence
 )
 
+# 加载 .env 文件
+def load_env_file():
+    """加载 .env 文件到环境变量"""
+    if os.path.exists('.env'):
+        try:
+            with open('.env', 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#') and '=' in line:
+                        key, value = line.split('=', 1)
+                        # 清理BOM字符
+                        key = key.strip('\ufeff')
+                        os.environ[key] = value
+        except UnicodeDecodeError:
+            # 如果UTF-8失败，尝试其他编码
+            try:
+                with open('.env', 'r', encoding='gbk') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith('#') and '=' in line:
+                            key, value = line.split('=', 1)
+                            # 清理BOM字符
+                            key = key.strip('\ufeff')
+                            os.environ[key] = value
+            except Exception as e:
+                print(f"DEBUG: Error loading .env: {e}")
+                pass
+
+# 在导入后立即加载环境变量
+load_env_file()
+
+
 # 配置日志
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 logging.basicConfig(
